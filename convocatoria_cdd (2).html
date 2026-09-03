@@ -1,0 +1,760 @@
+import React, { useState, useEffect } from 'react';
+import { ArrowRight, ArrowDown, X, Plus, ChevronRight, Activity, Database, Code, BarChart3, Globe, Cpu, LineChart } from 'lucide-react';
+
+// --- DATA PROCESSING ---
+const projectsData = [
+  {
+    id: "PRJ-01",
+    number: "01",
+    name: "Proyecto Mosca",
+    shortDescription: "Aplicación para reconocer mutaciones en alas de moscas de la fruta para detectar contaminación de fuentes de agua.",
+    challenge: "Identificar si la existencia de mutaciones morfológicas en bioindicadores se debe a la exposición a fuentes de agua contaminadas.",
+    activities: [
+      "Recolección y estructuración de set de imágenes.",
+      "Entrenamiento de modelos de visión computacional.",
+      "Análisis de falsos positivos y ajuste de hiperparámetros.",
+      "Desarrollo de interfaz de usuario básica."
+    ],
+    learn: ["Python", "Visión Computacional", "Investigación", "Deep Learning"],
+    areas: ["Ambiental", "Sistemas", "IA", "Ciencia de Datos"],
+    profile: "Estudiantes curiosos por la biología y el impacto ambiental que quieran dar sus primeros pasos en visión computacional.",
+    notNeeded: "No necesitas ser biólogo ni experto en redes neuronales. Te enseñaremos las bases del modelado.",
+    duration: "1 Semestre",
+    modality: "Mixta",
+    responsable: "Adriana Torrico y Peter",
+    icon: <Activity className="w-6 h-6 text-[#8910C6]" />
+  },
+  {
+    id: "PRJ-02",
+    number: "02",
+    name: "Proyecto Cebolla",
+    shortDescription: "Creación de un modelo para reconocer mutaciones en células de cebolla relacionadas con la exposición a contaminación.",
+    challenge: "Automatizar la detección de anomalías celulares en cultivos expuestos a agentes contaminantes utilizando imágenes microscópicas.",
+    activities: [
+      "Procesamiento de imágenes microscópicas.",
+      "Implementación de redes neuronales convolucionales (CNN).",
+      "Validación de resultados con equipo de la UMSA.",
+      "Visualización de datos y reportes."
+    ],
+    learn: ["Python", "Visión Computacional", "Estadística", "Análisis de Datos"],
+    areas: ["Ambiental", "Sistemas", "IA", "Ciencia de Datos"],
+    profile: "Estudiantes que quieran aplicar inteligencia artificial a problemas reales de ciencias naturales y medio ambiente.",
+    notNeeded: "No se requiere conocimiento previo en biología celular.",
+    duration: "1 Semestre",
+    modality: "Mixta",
+    responsable: "Adriana Torrico y Peter",
+    icon: <Database className="w-6 h-6 text-[#C2106E]" />
+  },
+  {
+    id: "PRJ-03",
+    number: "03",
+    name: "Proyecto PECE",
+    shortDescription: "Herramienta para DAEE que asigna exámenes aleatorios a estudiantes y realiza corrección automática a partir de imágenes.",
+    challenge: "Optimizar y hacer más transparente el proceso de evaluación estandarizada mediante la automatización y digitalización.",
+    activities: [
+      "Desarrollo de algoritmo de generación aleatoria de pruebas.",
+      "Implementación de OCR (Reconocimiento Óptico de Caracteres).",
+      "Creación de una base de datos relacional para notas.",
+      "Diseño de interfaz para administración docente."
+    ],
+    learn: ["Python", "OCR", "Bases de Datos", "Automatización", "SQL"],
+    areas: ["Sistemas", "IA", "Ciencia de Datos"],
+    profile: "Apasionados por la optimización de procesos y el desarrollo de herramientas de software funcional.",
+    notNeeded: "No necesitas experiencia previa en OCR; aprenderemos a utilizar librerías existentes.",
+    duration: "1 Semestre",
+    modality: "Virtual",
+    responsable: "Erwin Veneros",
+    icon: <Code className="w-6 h-6 text-[#2259E9]" />
+  },
+  {
+    id: "PRJ-04",
+    number: "04",
+    name: "Relaciones China - América Latina",
+    shortDescription: "Análisis exhaustivo de datos sobre las inversiones chinas en América Latina y su impacto económico y ambiental.",
+    challenge: "Extraer, limpiar y analizar grandes volúmenes de datos económicos y financieros para encontrar patrones de inversión a nivel macroeconómico.",
+    activities: [
+      "Scraping y recopilación de bases de datos internacionales.",
+      "Limpieza y estructuración de datos faltantes.",
+      "Análisis estadístico y series de tiempo.",
+      "Creación de dashboards interactivos y mapas geográficos."
+    ],
+    learn: ["R / Python", "Data Wrangling", "Visualización Avanzada", "Econometría Básica"],
+    areas: ["Relaciones Internacionales", "Finanzas", "Economía", "Ciencia de Datos"],
+    profile: "Estudiantes con fuerte interés en geopolítica, economía y descubrimiento de historias a través de los datos.",
+    notNeeded: "No necesitas saber programar a nivel experto; se valorará mucho la capacidad de análisis y pensamiento crítico.",
+    duration: "1 Semestre",
+    modality: "Mixta",
+    responsable: "Peter",
+    icon: <Globe className="w-6 h-6 text-[#C2106E]" />
+  },
+  {
+    id: "PRJ-05",
+    number: "05",
+    name: "Traductor Aymara - Español",
+    shortDescription: "Sistema de traducción automática neuronal en tiempo real entre Aymara y Español.",
+    challenge: "Preservar y democratizar el uso de un idioma originario mediante la aplicación de procesamiento de lenguaje natural de última generación.",
+    activities: [
+      "Creación de un corpus bilingüe Aymara-Español.",
+      "Entrenamiento de modelos de procesamiento de lenguaje natural (NLP).",
+      "Evaluación de calidad de traducción (métricas BLEU/ROUGE).",
+      "Implementación de interfaz web o móvil básica."
+    ],
+    learn: ["Python", "NLP", "Machine Learning", "Lingüística Computacional"],
+    areas: ["Relaciones Internacionales", "Comunicación", "Ciencia de Datos"],
+    profile: "Personas motivadas por el impacto social de la tecnología y la inteligencia artificial aplicada a lenguajes.",
+    notNeeded: "No es requisito hablar Aymara (aunque es un plus) ni haber entrenado modelos de lenguaje anteriormente.",
+    duration: "1 a 2 Semestres",
+    modality: "Presencial/Mixta",
+    responsable: "Martin Pavón y Peter",
+    icon: <Activity className="w-6 h-6 text-[#8910C6]" />
+  },
+  {
+    id: "PRJ-06",
+    number: "06",
+    name: "Vehículo Autónomo",
+    shortDescription: "Diseño y programación de un sistema que permita la circulación de un vehículo sin conductor en entornos controlados.",
+    challenge: "Integrar hardware y software para procesar datos de sensores en tiempo real y tomar decisiones de navegación.",
+    activities: [
+      "Integración de sensores (Lidar, cámaras, ultrasonido).",
+      "Procesamiento de señales y visión en tiempo real.",
+      "Implementación de algoritmos de toma de decisiones y control.",
+      "Pruebas en entorno físico."
+    ],
+    learn: ["Robótica", "IoT", "Visión Computacional", "C++ / Python", "Sistemas de Control"],
+    areas: ["Sistemas", "IA", "Electromecánica", "Ciencia de Datos"],
+    profile: "Estudiantes de perfiles técnicos (Sistemas, Electromecánica, Telecomunicaciones) con ganas de trastear con hardware y código.",
+    notNeeded: "No necesitas saber construir el auto; nos centraremos en el cerebro y la interpretación de los datos.",
+    duration: "2 Semestres",
+    modality: "Presencial",
+    responsable: "Alex",
+    icon: <Cpu className="w-6 h-6 text-[#2259E9]" />
+  },
+  {
+    id: "PRJ-07",
+    number: "07",
+    name: "Datos Climáticos y Calidad de Aire",
+    shortDescription: "Aplicativo para generar información en tiempo real de factores climáticos y de calidad ambiental en el campus.",
+    challenge: "Recolectar y visualizar datos ambientales en tiempo real para generar conciencia y permitir la toma de decisiones basada en evidencia.",
+    activities: [
+      "Conexión con APIs de sensores meteorológicos.",
+      "Almacenamiento de datos en bases de tiempo real.",
+      "Análisis predictivo de tendencias de contaminación.",
+      "Desarrollo de un dashboard público."
+    ],
+    learn: ["APIs", "Data Engineering", "Series de Tiempo", "Visualización Web"],
+    areas: ["Ambiental", "IA", "Ciencia de Datos", "Economía", "Sistemas"],
+    profile: "Interesados en la ingeniería de datos, el flujo continuo de información (streaming) y la visualización impactante.",
+    notNeeded: "No necesitas ser experto en meteorología; el foco está en el manejo de la tubería de datos (data pipeline).",
+    duration: "1 Semestre",
+    modality: "Mixta",
+    responsable: "Peter, Erwin Lusi Callapa y Zein Tonconi",
+    icon: <BarChart3 className="w-6 h-6 text-[#C2106E]" />
+  },
+  {
+    id: "PRJ-08",
+    number: "08",
+    name: "Base de Datos Tesis UPB",
+    shortDescription: "Plataforma de búsqueda y recomendación inteligente de tesis existentes en el repositorio de la universidad.",
+    challenge: "Facilitar el descubrimiento de conocimiento previo y evitar la duplicación de esfuerzos de investigación en la universidad.",
+    activities: [
+      "Extracción de metadatos del repositorio actual.",
+      "Clasificación y etiquetado automático de documentos usando NLP.",
+      "Creación de un motor de búsqueda y sistema de recomendación.",
+      "Diseño e implementación de interfaz web."
+    ],
+    learn: ["Web Scraping", "NLP", "Sistemas de Recomendación", "Desarrollo Web"],
+    areas: ["IA", "Ciencia de Datos", "Sistemas"],
+    profile: "Apasionados por la organización de la información y la creación de productos de software directamente útiles para los estudiantes.",
+    notNeeded: "No se requiere experiencia previa en sistemas de recomendación.",
+    duration: "1 Semestre",
+    modality: "Virtual",
+    responsable: "Zein Tonconi",
+    icon: <Database className="w-6 h-6 text-[#8910C6]" />
+  },
+  {
+    id: "PRJ-09",
+    number: "09",
+    name: "Lenguaje de Señas Boliviano",
+    shortDescription: "Aplicativo interactivo que traduce y enseña el Lenguaje de Señas Boliviano (LSB) mediante visión computacional.",
+    challenge: "Romper barreras de comunicación creando una herramienta tecnológica que interprete gestos y señas en tiempo real.",
+    activities: [
+      "Recolección de datos en video de señas básicas en LSB.",
+      "Entrenamiento de modelos de estimación de pose (Pose Estimation).",
+      "Clasificación temporal de secuencias de movimiento.",
+      "Creación de módulos interactivos de aprendizaje."
+    ],
+    learn: ["Computer Vision (MediaPipe)", "Deep Learning", "HCI (Human-Computer Interaction)"],
+    areas: ["Relaciones Internacionales", "Comunicación", "IA", "Sistemas"],
+    profile: "Estudiantes con sensibilidad social que quieran explorar la intersección entre la inteligencia artificial y la interacción humana.",
+    notNeeded: "No necesitas saber LSB previamente, el proyecto es también una oportunidad de inmersión en el lenguaje.",
+    duration: "2 Semestres",
+    modality: "Mixta",
+    responsable: "Luis Callapa",
+    icon: <Activity className="w-6 h-6 text-[#2259E9]" />
+  },
+  {
+    id: "PRJ-10",
+    number: "10",
+    name: "Mercado Financiero Boliviano",
+    shortDescription: "Herramienta analítica para comprender el comportamiento y las tendencias del mercado accionario en Bolivia.",
+    challenge: "Aportar transparencia y capacidad analítica a un mercado emergente y con datos fragmentados.",
+    activities: [
+      "Recopilación de datos de la Bolsa Boliviana de Valores y otras fuentes.",
+      "Construcción de indicadores financieros automatizados.",
+      "Modelado de predicción de tendencias a corto plazo.",
+      "Visualización interactiva para inversores/estudiantes."
+    ],
+    learn: ["Finanzas Cuantitativas", "Series de Tiempo", "Python", "Dashboards"],
+    areas: ["Finanzas", "Economía", "IA", "Ciencia de Datos", "Sistemas"],
+    profile: "Perfiles de economía, finanzas o ciencias exactas que quieran aplicar análisis riguroso al mundo de las inversiones.",
+    notNeeded: "No se requiere ser experto en trading, pero sí curiosidad por los mecanismos del mercado financiero.",
+    duration: "1 Semestre",
+    modality: "Virtual",
+    responsable: "Anelisse Aruquipa y Peter",
+    icon: <LineChart className="w-6 h-6 text-[#C2106E]" />
+  },
+  {
+    id: "PRJ-11",
+    number: "11",
+    name: "Impacto Publicaciones UPB",
+    shortDescription: "Análisis del impacto de las publicaciones y redes sociales de la UPB a través de visitas, likes, mensajes y engagement.",
+    challenge: "Medir el retorno y la influencia de la comunicación institucional utilizando métricas avanzadas y análisis de sentimiento.",
+    activities: [
+      "Conexión con APIs de redes sociales (Meta, LinkedIn, Twitter).",
+      "Análisis de sentimiento de comentarios y mensajes.",
+      "Clustering de publicaciones para identificar contenido exitoso.",
+      "Generación de reportes dinámicos para el área de marketing."
+    ],
+    learn: ["APIs de RRSS", "Análisis de Sentimiento (NLP)", "Marketing Analytics", "Estadística Aplicada"],
+    areas: ["IA", "Ciencia de Datos", "Marketing", "Comunicación"],
+    profile: "Estudiantes de comunicación, marketing o sistemas interesados en el análisis del comportamiento digital y las redes sociales.",
+    notNeeded: "No necesitas ser programador avanzado; te guiaremos en la extracción de datos y el uso de herramientas de BI.",
+    duration: "1 Semestre",
+    modality: "Virtual",
+    responsable: "Anelisse Aruquipa y Peter",
+    icon: <BarChart3 className="w-6 h-6 text-[#8910C6]" />
+  }
+];
+
+// --- LOGO COMPONENT ---
+// Recreación del logo en SVG (red de nodos formando una 'C') para asegurar 
+// renderizado perfecto sin depender de enlaces externos que puedan romperse.
+const CCDLogo = () => (
+  <svg viewBox="0 0 100 100" className="w-full h-full p-2" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#8910C6" />
+        <stop offset="100%" stopColor="#C2106E" />
+      </linearGradient>
+    </defs>
+    
+    {/* Lineas conectoras (edges) */}
+    <path d="M70 20 L50 15 L25 30 L15 50 L25 70 L50 85 L70 80" stroke="url(#logo-grad)" strokeWidth="2.5" />
+    <path d="M50 15 L35 40 L15 50 L35 60 L50 85" stroke="url(#logo-grad)" strokeWidth="1.5" />
+    <path d="M70 20 L45 35 L35 40 M70 80 L45 65 L35 60" stroke="url(#logo-grad)" strokeWidth="1.5" />
+    <path d="M25 30 L35 40 L35 60 L25 70" stroke="url(#logo-grad)" strokeWidth="1.5" />
+    
+    {/* Nodos (vertices) */}
+    <circle cx="70" cy="20" r="6" fill="url(#logo-grad)" />
+    <circle cx="50" cy="15" r="7" fill="url(#logo-grad)" />
+    <circle cx="25" cy="30" r="5" fill="url(#logo-grad)" />
+    <circle cx="15" cy="50" r="8" fill="url(#logo-grad)" />
+    <circle cx="25" cy="70" r="5" fill="url(#logo-grad)" />
+    <circle cx="50" cy="85" r="7" fill="url(#logo-grad)" />
+    <circle cx="70" cy="80" r="6" fill="url(#logo-grad)" />
+    <circle cx="35" cy="40" r="4" fill="url(#logo-grad)" />
+    <circle cx="35" cy="60" r="4" fill="url(#logo-grad)" />
+    <circle cx="45" cy="35" r="3" fill="url(#logo-grad)" />
+    <circle cx="45" cy="65" r="3" fill="url(#logo-grad)" />
+  </svg>
+);
+
+
+// --- COMPONENTES ---
+
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <nav className="fixed w-full z-50 bg-[#F4F4F1]/90 backdrop-blur-md border-b border-[#0C0728]/10 transition-all">
+      <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 flex justify-between items-center h-20">
+        <div className="flex items-center space-x-3">
+          {/* Logo del Club */}
+          <div className="w-12 h-12 bg-[#0a0518] rounded-full flex items-center justify-center overflow-hidden border border-[#0C0728]/10 shadow-sm">
+            <CCDLogo />
+          </div>
+          <div className="hidden sm:block font-bold text-[#0C0728] tracking-tight leading-tight">
+            CLUB DE<br/>CIENCIA DE DATOS
+          </div>
+        </div>
+
+        {/* Desktop Menu */}
+        <div className="hidden md:flex space-x-8 text-sm font-medium tracking-wide text-[#0C0728]/70 uppercase items-center">
+          <a href="#inicio" className="hover:text-[#C2106E] transition-colors">Inicio</a>
+          <a href="#proyectos" className="hover:text-[#C2106E] transition-colors">Proyectos</a>
+          <a href="#como-funciona" className="hover:text-[#C2106E] transition-colors">Cómo funciona</a>
+          <a href="#inscripcion" className="text-[#C2106E] font-bold hover:text-[#8910C6] transition-colors">Inscripción</a>
+        </div>
+
+        {/* Mobile menu button */}
+        <div className="md:hidden">
+          <button onClick={() => setIsOpen(!isOpen)} className="text-[#0C0728] p-2">
+            {isOpen ? <X /> : <div className="space-y-1.5"><div className="w-6 h-0.5 bg-current"></div><div className="w-6 h-0.5 bg-current"></div><div className="w-4 h-0.5 bg-current"></div></div>}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div className="md:hidden bg-[#F4F4F1] border-b border-[#0C0728]/10 px-6 py-4 space-y-4 font-medium uppercase tracking-wider text-sm">
+          <a href="#inicio" onClick={() => setIsOpen(false)} className="block py-2 text-[#0C0728]">Inicio</a>
+          <a href="#proyectos" onClick={() => setIsOpen(false)} className="block py-2 text-[#0C0728]">Proyectos</a>
+          <a href="#como-funciona" onClick={() => setIsOpen(false)} className="block py-2 text-[#0C0728]">Cómo funciona</a>
+          <a href="#inscripcion" onClick={() => setIsOpen(false)} className="block py-2 text-[#C2106E] font-bold">Inscripción</a>
+        </div>
+      )}
+    </nav>
+  );
+};
+
+const GridDecoration = () => (
+  <div className="absolute inset-0 pointer-events-none opacity-[0.03] z-0 overflow-hidden" aria-hidden="true">
+    {/* Patrón de puntos sutil */}
+    <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(#0C0728 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+    {/* Elementos editoriales científicos */}
+    <div className="absolute top-[20%] left-[10%] text-xs font-mono text-[#0C0728]">x: 45.2, y: 12.8</div>
+    <div className="absolute bottom-[30%] right-[15%] text-xs font-mono text-[#0C0728]">[ data.frame ]</div>
+    <div className="absolute top-[60%] left-[5%] text-[#0C0728]/20"><Plus size={24} /></div>
+    <div className="absolute top-[15%] right-[20%] text-[#0C0728]/20"><Plus size={24} /></div>
+    {/* Línea decorativa */}
+    <div className="absolute top-0 bottom-0 left-[25%] border-l border-[#0C0728] opacity-20"></div>
+  </div>
+);
+
+export default function App() {
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const registrationLink = "https://forms.gle/HYZBZ9U4A4EK5HUo9";
+
+  // Prevenir scroll en body cuando el modal está abierto
+  useEffect(() => {
+    if (selectedProject) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [selectedProject]);
+
+  return (
+    <div className="bg-[#F4F4F1] min-h-screen text-[#0C0728] font-sans selection:bg-[#C2106E] selection:text-white relative">
+      <Navbar />
+
+      {/* --- 1. HERO / PORTADA --- */}
+      <section id="inicio" className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 sm:px-12 lg:px-16 max-w-7xl mx-auto flex flex-col justify-center min-h-[90vh] overflow-hidden">
+        <GridDecoration />
+        
+        {/* Formas abstractas / Nodos de datos */}
+        <div className="absolute top-1/4 right-0 lg:right-20 w-64 h-64 bg-[#C2106E]/10 rounded-full blur-3xl -z-10 mix-blend-multiply"></div>
+        <div className="absolute bottom-1/4 left-10 w-72 h-72 bg-[#8910C6]/10 rounded-full blur-3xl -z-10 mix-blend-multiply"></div>
+
+        <div className="relative z-10 max-w-4xl">
+          <div className="flex items-center space-x-2 mb-6">
+            <span className="w-2 h-2 bg-[#C2106E] rounded-full"></span>
+            <span className="text-sm font-mono tracking-widest uppercase text-[#0C0728]/70">Convocatoria Semestral</span>
+          </div>
+          
+          <h1 className="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tighter leading-[0.95] mb-6">
+            PROYECTOS <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#C2106E] to-[#8910C6]">
+              DEL CLUB
+            </span>
+          </h1>
+          
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-medium tracking-tight text-[#0C0728]/80 max-w-2xl mb-8 leading-snug">
+            Este semestre, pasamos de aprender sobre datos a <span className="text-[#0C0728] font-bold border-b-2 border-[#2259E9]">trabajar con ellos</span>.
+          </h2>
+          
+          <p className="text-base sm:text-lg text-[#0C0728]/60 max-w-xl mb-12 font-light">
+            Conoce los proyectos que desarrollaremos durante el semestre, encuentra el que más te interese y sé parte del equipo.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+            <a href="#proyectos" className="group flex items-center justify-center bg-[#C2106E] text-white px-8 py-4 rounded-none font-bold tracking-wide uppercase text-sm hover:bg-[#8910C6] transition-all duration-300 w-full sm:w-auto shadow-[4px_4px_0px_0px_rgba(12,7,40,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1">
+              Conoce los proyectos
+              <ArrowDown className="ml-2 w-4 h-4 group-hover:animate-bounce" />
+            </a>
+            <a 
+              href={registrationLink} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group flex items-center text-[#0C0728] font-bold tracking-wide uppercase text-sm hover:text-[#C2106E] transition-colors"
+            >
+              Quiero inscribirme
+              <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-2" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* --- 2. INTRODUCCIÓN --- */}
+      <section className="border-t border-[#0C0728]/10 bg-white">
+        <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 py-24 lg:py-32">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
+            
+            <div className="lg:col-span-5">
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-6">¿QUÉ VAMOS A HACER?</h2>
+              <div className="w-12 h-1 bg-[#2259E9] mb-8"></div>
+              <p className="text-lg leading-relaxed text-[#0C0728]/80">
+                Durante este semestre desarrollaremos distintos proyectos en los que podremos aplicar herramientas de ciencia de datos, estadística, programación y análisis de información para explorar problemas y construir soluciones.
+              </p>
+            </div>
+            
+            {/* Decoración editorial en el centro */}
+            <div className="hidden lg:flex lg:col-span-2 justify-center items-center opacity-30">
+              <div className="w-px h-full bg-[#0C0728] relative">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 border border-[#0C0728] rounded-full bg-white"></div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-5 lg:pt-16">
+              <h3 className="text-xl font-bold tracking-tight mb-4 text-[#8910C6]">No necesitas saberlo todo para participar.</h3>
+              <p className="text-lg leading-relaxed text-[#0C0728]/80 border-l-2 border-[#C2106E] pl-6 py-2">
+                Los proyectos también son espacios para aprender. Buscamos estudiantes con curiosidad, compromiso y ganas de experimentar.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* --- 3. LOS PROYECTOS --- */}
+      <section id="proyectos" className="py-24 lg:py-32 px-6 sm:px-12 lg:px-16 max-w-7xl mx-auto relative">
+        <div className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-end justify-between border-b border-[#0C0728]/10 pb-8">
+          <div>
+            <span className="text-sm font-mono tracking-widest uppercase text-[#C2106E] block mb-2">Convocatoria Abierta</span>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter uppercase">Encuentra <br/>tu proyecto</h2>
+          </div>
+          <div className="mt-6 md:mt-0 text-[#0C0728]/50 font-mono text-sm">
+            Total disponibles: {projectsData.length}
+          </div>
+        </div>
+
+        {/* Masonry-ish Grid para las tarjetas editoriales */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {projectsData.map((project, index) => (
+            <div 
+              key={project.id} 
+              className={`group bg-white border border-[#0C0728]/10 p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-[8px_8px_0px_0px_rgba(194,16,110,1)] hover:-translate-y-1 relative overflow-hidden ${index % 4 === 0 || index % 5 === 0 ? 'lg:col-span-2 md:col-span-2' : ''}`}
+            >
+              {/* Decoración de fondo en tarjeta */}
+              <div className="absolute -right-10 -top-10 opacity-5 group-hover:opacity-10 transition-opacity duration-300 transform group-hover:scale-110">
+                {project.icon}
+              </div>
+
+              <div>
+                <div className="flex justify-between items-start mb-6">
+                  <span className="text-4xl font-bold font-serif text-[#0C0728]/20">{project.number}</span>
+                  <div className="flex flex-wrap gap-2 justify-end">
+                    {project.areas.slice(0, 2).map((area, i) => (
+                      <span key={i} className="text-[10px] font-mono tracking-wider uppercase bg-[#F4F4F1] text-[#0C0728]/60 px-2 py-1 rounded-sm">
+                        {area}
+                      </span>
+                    ))}
+                    {project.areas.length > 2 && <span className="text-[10px] font-mono tracking-wider uppercase bg-[#F4F4F1] text-[#0C0728]/60 px-2 py-1 rounded-sm">+{project.areas.length - 2}</span>}
+                  </div>
+                </div>
+                
+                <h3 className="text-2xl font-bold tracking-tight mb-4 group-hover:text-[#C2106E] transition-colors">{project.name}</h3>
+                <p className="text-sm text-[#0C0728]/70 mb-6 line-clamp-3 leading-relaxed">
+                  {project.shortDescription}
+                </p>
+
+                <div className="space-y-2 mb-8">
+                  <div className="flex items-center text-xs text-[#0C0728]/60 font-mono">
+                    <span className="w-20 font-semibold uppercase">Nivel:</span>
+                    <span>Abierto (apoyo disponible)</span>
+                  </div>
+                  <div className="flex items-center text-xs text-[#0C0728]/60 font-mono">
+                    <span className="w-20 font-semibold uppercase">Modalidad:</span>
+                    <span>{project.modality}</span>
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => setSelectedProject(project)}
+                className="mt-auto w-full flex items-center justify-between border-t border-[#0C0728]/10 pt-4 text-sm font-bold uppercase tracking-wider text-[#0C0728] group-hover:text-[#8910C6] transition-colors"
+              >
+                <span>Ver Proyecto</span>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-2" />
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* --- 5. ¿QUIÉN PUEDE PARTICIPAR? --- */}
+      <section className="bg-[#0C0728] text-white py-24 lg:py-32 relative overflow-hidden">
+        {/* Fondo decorativo */}
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(#8910C6 1px, transparent 1px), linear-gradient(90deg, #8910C6 1px, transparent 1px)', backgroundSize: '50px 50px' }}></div>
+        
+        <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 relative z-10">
+          <div className="max-w-3xl mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter uppercase mb-6 leading-tight">
+              No importa de dónde vienes. <br/>
+              <span className="text-[#C2106E]">Importa lo que quieres aprender.</span>
+            </h2>
+            <p className="text-lg text-white/70 font-light">
+              Los proyectos están abiertos a estudiantes de diferentes carreras y niveles. La ciencia de datos es interdisciplinaria y necesitamos diferentes perspectivas.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 border-t border-white/20 pt-16">
+            
+            <div className="relative">
+              <div className="text-[#2259E9] text-5xl font-bold mb-4 opacity-50 absolute -top-8 -left-4">01</div>
+              <h3 className="text-xl font-bold tracking-widest uppercase mb-4 relative z-10">Curiosidad</h3>
+              <p className="text-white/60 text-sm leading-relaxed relative z-10">
+                Queremos personas interesadas en entender problemas complejos, explorar variables y hacer las preguntas correctas a los datos.
+              </p>
+            </div>
+            
+            <div className="relative">
+              <div className="text-[#C2106E] text-5xl font-bold mb-4 opacity-50 absolute -top-8 -left-4">02</div>
+              <h3 className="text-xl font-bold tracking-widest uppercase mb-4 relative z-10">Compromiso</h3>
+              <p className="text-white/60 text-sm leading-relaxed relative z-10">
+                Los proyectos requieren participación activa, responsabilidad con el equipo y constancia durante el desarrollo del semestre.
+              </p>
+            </div>
+            
+            <div className="relative">
+              <div className="text-[#8910C6] text-5xl font-bold mb-4 opacity-50 absolute -top-8 -left-4">03</div>
+              <h3 className="text-xl font-bold tracking-widest uppercase mb-4 relative z-10">Ganas de aprender</h3>
+              <p className="text-white/60 text-sm leading-relaxed relative z-10">
+                No necesitas dominar todas las herramientas (Python, SQL, IA) desde el inicio. Aquí encontrarás el espacio y el equipo para aprenderlas aplicándolas.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* --- 6. ¿CÓMO FUNCIONA? --- */}
+      <section id="como-funciona" className="py-24 lg:py-32 px-6 sm:px-12 lg:px-16 max-w-7xl mx-auto">
+        <div className="text-center mb-20">
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tighter uppercase mb-4">El Proceso</h2>
+          <div className="w-16 h-1 bg-[#0C0728] mx-auto"></div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+          {/* Línea conectora visible solo en desktop */}
+          <div className="hidden lg:block absolute top-12 left-10 right-10 h-px bg-[#0C0728]/20 -z-10"></div>
+          
+          {[
+            { num: "01", title: "Explora", desc: "Revisa la lista de proyectos y sus requerimientos." },
+            { num: "02", title: "Elige", desc: "Encuentra el proyecto que más resuene con tus intereses." },
+            { num: "03", title: "Inscríbete", desc: "Completa el formulario de postulación en línea." },
+            { num: "04", title: "Construye", desc: "Forma parte del equipo y desarrolla la solución." }
+          ].map((step, idx) => (
+            <div key={idx} className="flex flex-col items-center text-center bg-white p-8 border border-[#0C0728]/5 shadow-sm hover:border-[#8910C6]/30 transition-colors">
+              <div className="w-24 h-24 bg-[#F4F4F1] rounded-full flex items-center justify-center text-3xl font-serif font-bold text-[#0C0728] mb-6 shadow-inner relative">
+                {step.num}
+                {idx < 3 && <ChevronRight className="absolute -right-8 text-[#0C0728]/30 hidden sm:block lg:hidden" />}
+              </div>
+              <h3 className="text-lg font-bold tracking-widest uppercase mb-3">{step.title}</h3>
+              <p className="text-sm text-[#0C0728]/60">{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* --- 7. INSCRIPCIÓN --- */}
+      <section id="inscripcion" className="bg-[#C2106E] text-white py-24 lg:py-32 px-6 sm:px-12 lg:px-16">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tighter uppercase mb-8">
+            ¿Encontraste <br/>tu proyecto?
+          </h2>
+          <p className="text-lg sm:text-xl text-white/90 mb-12 font-light max-w-2xl mx-auto">
+            Elige el proyecto que más te interese y completa el formulario. Cuéntanos un poco sobre ti, tus intereses y qué te gustaría aprender este semestre.
+          </p>
+          
+          <a 
+            href={registrationLink} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center bg-white text-[#C2106E] px-10 py-5 text-lg font-bold tracking-widest uppercase hover:bg-[#0C0728] hover:text-white transition-all duration-300 shadow-[8px_8px_0px_0px_rgba(12,7,40,0.5)] hover:shadow-none hover:translate-x-2 hover:translate-y-2"
+          >
+            Inscribirme a los proyectos
+            <ArrowRight className="ml-3 w-5 h-5" />
+          </a>
+
+          <p className="mt-10 text-sm font-mono tracking-widest text-white/70 uppercase">
+            Las inscripciones estarán abiertas hasta el viernes de esta semana.
+          </p>
+        </div>
+      </section>
+
+      {/* --- 8. CIERRE --- */}
+      <footer className="bg-[#0C0728] text-white pt-24 pb-12 px-6 sm:px-12 lg:px-16 border-t border-white/10">
+        <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
+          
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase leading-tight mb-16 max-w-4xl">
+            Los datos son el punto de partida. <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2259E9] via-[#8910C6] to-[#C2106E]">
+              Lo que hagamos con ellos depende de nosotros.
+            </span>
+          </h2>
+          
+          <div className="w-full h-px bg-white/10 mb-12"></div>
+
+          <div className="flex flex-col sm:flex-row justify-between items-center w-full gap-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-[#0a0518] rounded-full flex items-center justify-center p-1 border border-white/20">
+                 <CCDLogo />
+              </div>
+              <div className="text-left">
+                <p className="font-bold tracking-tight">Club de Ciencia de Datos</p>
+                <p className="text-xs text-white/50 font-mono">Universidad Privada Boliviana</p>
+              </div>
+            </div>
+            
+            <div className="text-xs text-white/40 font-mono">
+              © {new Date().getFullYear()} Convocatoria Proyectos CDD.
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* --- 4. DETALLE DE CADA PROYECTO (MODAL) --- */}
+      {selectedProject && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 lg:p-12 animate-in fade-in duration-200">
+          {/* Overlay oscuro */}
+          <div 
+            className="absolute inset-0 bg-[#0C0728]/80 backdrop-blur-sm"
+            onClick={() => setSelectedProject(null)}
+          ></div>
+          
+          {/* Contenedor del Modal */}
+          <div className="relative bg-[#F4F4F1] w-full max-w-5xl max-h-[90vh] overflow-y-auto shadow-2xl border border-[#0C0728]/20 flex flex-col">
+            
+            {/* Cabecera del Modal (Sticky) */}
+            <div className="sticky top-0 bg-[#F4F4F1] border-b border-[#0C0728]/10 px-8 py-6 flex justify-between items-center z-10">
+              <div className="flex items-center space-x-4">
+                <span className="text-3xl font-serif text-[#C2106E] font-bold">{selectedProject.number}</span>
+                <span className="text-sm font-mono tracking-widest uppercase text-[#0C0728]/50 hidden sm:inline-block">/ Detalle de Proyecto</span>
+              </div>
+              <button 
+                onClick={() => setSelectedProject(null)}
+                className="p-2 bg-white border border-[#0C0728]/10 hover:bg-[#C2106E] hover:text-white hover:border-[#C2106E] transition-colors rounded-full"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Contenido del Modal */}
+            <div className="p-8 lg:p-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
+              
+              {/* Columna Principal (2/3) */}
+              <div className="lg:col-span-2 space-y-10">
+                
+                <div>
+                  <h2 className="text-4xl sm:text-5xl font-black tracking-tighter mb-4 text-[#0C0728] uppercase leading-tight">
+                    {selectedProject.name}
+                  </h2>
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {selectedProject.areas.map((area: string, i: number) => (
+                      <span key={i} className="text-xs font-mono bg-[#0C0728] text-white px-3 py-1 uppercase tracking-wider">
+                        {area}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <section>
+                  <h3 className="text-xl font-bold border-b-2 border-[#C2106E] inline-block mb-4 uppercase tracking-widest">¿De qué trata?</h3>
+                  <p className="text-lg text-[#0C0728]/80 leading-relaxed font-light">
+                    {selectedProject.shortDescription}
+                  </p>
+                </section>
+
+                <section className="bg-white p-6 border-l-4 border-[#2259E9] shadow-sm">
+                  <h3 className="text-lg font-bold mb-2 uppercase tracking-wide text-[#2259E9]">El desafío</h3>
+                  <p className="text-[#0C0728]/80 leading-relaxed">
+                    {selectedProject.challenge}
+                  </p>
+                </section>
+
+                <section>
+                  <h3 className="text-xl font-bold border-b-2 border-[#8910C6] inline-block mb-4 uppercase tracking-widest">¿Qué vamos a hacer?</h3>
+                  <ul className="space-y-3">
+                    {selectedProject.activities.map((act: string, i: number) => (
+                      <li key={i} className="flex items-start">
+                        <span className="text-[#8910C6] mr-3 font-bold">→</span>
+                        <span className="text-[#0C0728]/80">{act}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="text-xl font-bold mb-4 uppercase tracking-widest">¿Qué puedes aprender?</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {selectedProject.learn.map((tag: string, i: number) => (
+                      <span key={i} className="px-4 py-2 border border-[#0C0728]/20 rounded-full text-sm font-medium text-[#0C0728]/70 bg-white">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+
+                <div className="grid sm:grid-cols-2 gap-8 pt-4">
+                  <div>
+                    <h3 className="font-bold uppercase tracking-wide mb-2 text-sm text-[#0C0728]/50">¿Qué buscamos?</h3>
+                    <p className="text-sm leading-relaxed text-[#0C0728]/80">{selectedProject.profile}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-bold uppercase tracking-wide mb-2 text-sm text-[#0C0728]/50">No necesitas saber...</h3>
+                    <p className="text-sm leading-relaxed text-[#0C0728]/80">{selectedProject.notNeeded}</p>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Columna Lateral de Información (1/3) */}
+              <div className="lg:col-span-1">
+                <div className="bg-white border border-[#0C0728]/10 p-6 sticky top-8">
+                  <h3 className="font-black text-xl mb-6 uppercase tracking-wider border-b border-[#0C0728]/10 pb-4">Ficha Técnica</h3>
+                  
+                  <dl className="space-y-4 text-sm">
+                    <div>
+                      <dt className="text-[#0C0728]/50 font-mono uppercase text-xs mb-1">Duración</dt>
+                      <dd className="font-bold text-[#0C0728]">{selectedProject.duration}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-[#0C0728]/50 font-mono uppercase text-xs mb-1">Modalidad</dt>
+                      <dd className="font-bold text-[#0C0728]">{selectedProject.modality}</dd>
+                    </div>
+                    <div className="pt-4 border-t border-[#0C0728]/10">
+                      <dt className="text-[#0C0728]/50 font-mono uppercase text-xs mb-1">Responsable(s)</dt>
+                      <dd className="font-bold text-[#C2106E]">{selectedProject.responsable}</dd>
+                    </div>
+                  </dl>
+
+                  <a 
+                    href={registrationLink}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="mt-8 w-full block text-center bg-[#0C0728] text-white py-4 font-bold uppercase tracking-widest text-sm hover:bg-[#C2106E] transition-colors"
+                  >
+                    Quiero participar
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
